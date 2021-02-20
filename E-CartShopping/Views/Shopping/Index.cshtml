@@ -1,0 +1,73 @@
+﻿@model IEnumerable<E_CartShopping.ViewModel.ShoppingViewModel>
+@{
+    ViewBag.Title = "Index";
+}
+@*<h2>ShoppingController Index</h2>*@
+<style>
+    #heading {
+        margin: 20px;
+        text-align: center;
+    }
+    .card {
+        box-shadow: 5px 5px 15px -5px rgba(0, 0, 0, 0.5);
+        border-radius: 2%;
+        margin-bottom: 8px;
+        border: none;
+        background-color: white;
+    }
+    .card-img-top {
+            height: 160px; 
+            width: 220px;
+            padding: 12px 0px 0px 40px;
+    }
+    .card-body {
+        padding: 10px 0px 5px 30px;
+    }
+    #btnAddToCard {
+            text-align: right; 
+            margin-left: 15px;
+    }
+</style>
+<script type="text/javascript">
+    function AddToCart(item) {
+        var itemId = $(item).attr("itemid");
+        var formData = new FormData();
+        formData.append("ItemId", itemId);
+
+        $.ajax({
+            async: true,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            data: formData,
+            url: '/Shopping/Index',
+            success: function (data) {
+                if (data.success) {
+                    $("#cartItem").text("Cart(" + data.counter + ")");
+                }
+            },
+            error: function () {
+                alert("There is some problem.")
+            }
+        });
+    }
+</script>
+<div class="container">
+    <h2 id="heading">Products List</h2>
+    @foreach (var item in Model)
+    {
+        <div class="col-md-3 mb-5">
+            <div class="card">
+                <img class="card-img-top" src="@Url.Content(item.ImagePath)" alt="Card image cap" />
+                <div class="card-body">
+                    <h4 class="card-title">@item.ItemName</h4>
+                    <p class="card-text">@item.Description</p>
+                    <b>@item.ItemPrice.ToString("#,##0.00 INR")</b>
+                    <input id="btnAddToCard" type="button" name="AddToCard" value="Add to Cart" class="btn btn-primary" itemid="@item.ItemId" onclick="AddToCart(this)" />
+                </div>
+            </div>
+        </div>      
+     }
+</div>
+
+
